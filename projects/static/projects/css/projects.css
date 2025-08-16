@@ -1,0 +1,70 @@
+/* Projects Styles */
+
+/* Project cards */
+.project-card {
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.project-card .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.project-card .progress {
+    height: 10px;
+    margin-top: 10px;
+}
+
+/* Project details */
+.project-info {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.project-info h4 {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 10px;
+}
+
+.project-members {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.project-member {
+    background-color: #e9ecef;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+/* Version badges */
+.version-badge {
+    background-color: #6c757d;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-right: 5px;
+}
+
+/* Create/Edit project form */
+.project-form label {
+    font-weight: bold;
+}
+
+.project-form .required-field::after {
+    content: "*";
+    color: red;
+    margin-left: 4px;
+}

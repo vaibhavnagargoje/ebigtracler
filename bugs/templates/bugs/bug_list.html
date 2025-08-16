@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}Bug List | Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Bugs</h2>
+        <a href="{% url 'bugs:create_bug' %}" class="btn btn-primary">Report New Bug</a>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Filter Bugs</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label for="project" class="form-label">Project</label>
+                    <select name="project" id="project" class="form-select">
+                        <option value="">All Projects</option>
+                        <!-- Project options will be populated by view -->
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="status" class="form-label">Status</label>
+                    <select name="status" id="status" class="form-select">
+                        <option value="">All Statuses</option>
+                        <option value="open">Open</option>
+                        <option value="in_progress">In Progress</option>
+                        <option value="resolved">Resolved</option>
+                        <option value="closed">Closed</option>
+                        <option value="reopened">Reopened</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="priority" class="form-label">Priority</label>
+                    <select name="priority" id="priority" class="form-select">
+                        <option value="">All Priorities</option>
+                        <option value="low">Low</option>
+                        <option value="medium">Medium</option>
+                        <option value="high">High</option>
+                        <option value="critical">Critical</option>
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    {% if bugs %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Project</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Severity</th>
+                        <th>Reported By</th>
+                        <th>Assigned To</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bug in bugs %}
+                        <tr>
+                            <td>{{ bug.id }}</td>
+                            <td><a href="{% url 'bugs:bug_detail' bug.id %}">{{ bug.title }}</a></td>
+                            <td>{{ bug.project.name }}</td>
+                            <td>
+                                <span class="badge bg-{{ bug.status|slugify }}">
+                                    {{ bug.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ bug.priority|slugify }}">
+                                    {{ bug.get_priority_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge bg-{{ bug.severity|slugify }}">
+                                    {{ bug.get_severity_display }}
+                                </span>
+                            </td>
+                            <td>{{ bug.reported_by.username }}</td>
+                            <td>{% if bug.assigned_to %}{{ bug.assigned_to.username }}{% else %}Unassigned{% endif %}</td>
+                            <td>{{ bug.created_at|date:"M d, Y" }}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{% url 'bugs:bug_detail' bug.id %}" class="btn btn-info">View</a>
+                                    <a href="{% url 'bugs:edit_bug' bug.id %}" class="btn btn-warning">Edit</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="alert alert-info">
+            <p>No bugs match your criteria.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

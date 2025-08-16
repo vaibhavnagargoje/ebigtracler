@@ -1,0 +1,189 @@
+/* Bugs Styles */
+
+/* Bug list */
+.bug-list-table th {
+    background-color: #f8f9fa;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.bug-list-row:hover {
+    background-color: rgba(0, 123, 255, 0.05);
+}
+
+/* Bug details */
+.bug-info-section {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.bug-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.bug-description {
+    white-space: pre-line;
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+}
+
+/* Status badges */
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.status-open {
+    background-color: #dc3545;
+    color: white;
+}
+
+.status-in-progress {
+    background-color: #fd7e14;
+    color: white;
+}
+
+.status-resolved {
+    background-color: #20c997;
+    color: white;
+}
+
+.status-closed {
+    background-color: #6c757d;
+    color: white;
+}
+
+.status-reopened {
+    background-color: #6610f2;
+    color: white;
+}
+
+/* Priority badges */
+.priority-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.priority-low {
+    background-color: #28a745;
+    color: white;
+}
+
+.priority-medium {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.priority-high {
+    background-color: #fd7e14;
+    color: white;
+}
+
+.priority-critical {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Severity badges */
+.severity-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.severity-minor {
+    background-color: #28a745;
+    color: white;
+}
+
+.severity-major {
+    background-color: #fd7e14;
+    color: white;
+}
+
+.severity-critical {
+    background-color: #dc3545;
+    color: white;
+}
+
+.severity-blocker {
+    background-color: #6610f2;
+    color: white;
+}
+
+/* Bug comments */
+.comment-section {
+    margin-top: 30px;
+}
+
+.comment {
+    padding: 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.comment-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.comment-content {
+    white-space: pre-line;
+}
+
+/* Bug attachments */
+.attachment-list {
+    margin-top: 20px;
+}
+
+.attachment-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.attachment-icon {
+    margin-right: 10px;
+    font-size: 1.5rem;
+}
+
+.attachment-info {
+    flex-grow: 1;
+}
+
+.attachment-actions {
+    margin-left: 10px;
+}
+
+/* Bug history */
+.history-item {
+    padding: 10px;
+    border-left: 3px solid #007bff;
+    margin-bottom: 10px;
+    background-color: #f8f9fa;
+}
+
+.history-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-bottom: 5px;
+}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Change Status | Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-exchange-alt"></i> Change Bug Status</h4>
+                    <p class="mb-0 text-muted">Bug #{{ bug.id }} - {{ bug.title }}</p>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <label class="form-label">Current Status</label>
+                            <p>
+                                <span class="badge bg-{{ bug.status|slugify }} fs-6">
+                                    {{ bug.get_status_display }}
+                                </span>
+                            </p>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="status" class="form-label required-field">New Status</label>
+                            <select class="form-select" id="status" name="status" required>
+                                <option value="">Select New Status</option>
+                                <option value="open" {% if bug.status == 'open' %}disabled{% endif %}>Open</option>
+                                <option value="in_progress" {% if bug.status == 'in_progress' %}disabled{% endif %}>In Progress</option>
+                                <option value="resolved" {% if bug.status == 'resolved' %}disabled{% endif %}>Resolved</option>
+                                <option value="closed" {% if bug.status == 'closed' %}disabled{% endif %}>Closed</option>
+                                <option value="reopened" {% if bug.status == 'reopened' %}disabled{% endif %}>Reopened</option>
+                            </select>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'bugs:bug_detail' bug.id %}" class="btn btn-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Update Status
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

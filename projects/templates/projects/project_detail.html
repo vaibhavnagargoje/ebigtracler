@@ -1,0 +1,210 @@
+{% extends 'base.html' %}
+{% load bug_extras %}
+
+{% block title %}{{ project.name }} | Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4><i class="fas fa-project-diagram"></i> {{ project.name }}</h4>
+                    {% if request.user == project.manager or request.user.is_staff %}
+                        <div class="btn-group">
+                            <a href="{% url 'projects:edit_project' project.id %}" class="btn btn-warning btn-sm">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="{% url 'projects:delete_project' project.id %}" class="btn btn-danger btn-sm">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <p class="lead">{{ project.description }}</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-user-tie"></i> Project Manager</h6>
+                            <p>{{ project.manager.get_full_name|default:project.manager.username }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-calendar"></i> Start Date</h6>
+                            <p>{{ project.start_date|date:"F d, Y" }}</p>
+                        </div>
+                    </div>
+                    
+                    {% if project.end_date %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6><i class="fas fa-calendar-check"></i> End Date</h6>
+                                <p>{{ project.end_date|date:"F d, Y" }}</p>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Project Statistics -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-chart-bar"></i> Project Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <h3 class="text-primary">{{ bugs.count }}</h3>
+                                <p class="mb-0">Total Bugs</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <h3 class="text-danger">{{ bugs|filter_by_status:"open" }}</h3>
+                                <p class="mb-0">Open Bugs</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <h3 class="text-warning">{{ bugs|filter_by_status:"in_progress" }}</h3>
+                                <p class="mb-0">In Progress</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="stat-item">
+                                <h3 class="text-success">{{ bugs|filter_by_status:"resolved" }}</h3>
+                                <p class="mb-0">Resolved</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <!-- Project Members -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5><i class="fas fa-users"></i> Team Members ({{ project.members.count }})</h5>
+                    {% if request.user == project.manager or request.user.is_staff %}
+                        <a href="{% url 'projects:manage_members' project.id %}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-user-plus"></i> Manage
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% for member in project.members.all %}
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-user-circle text-muted me-2"></i>
+                            <div>
+                                <strong>{{ member.get_full_name|default:member.username }}</strong>
+                                {% if member == project.manager %}
+                                    <span class="badge bg-warning ms-1">Manager</span>
+                                {% endif %}
+                                <br>
+                                <small class="text-muted">{{ member.profile.get_role_display }}</small>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted">No team members assigned.</p>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Project Versions -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5><i class="fas fa-code-branch"></i> Versions</h5>
+                    {% if request.user == project.manager or request.user.is_staff %}
+                        <a href="{% url 'projects:create_version' project.id %}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-plus"></i> Add
+                        </a>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    {% for version in versions %}
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div>
+                                <strong>{{ version.version_number }}</strong>
+                                <br>
+                                <small class="text-muted">{{ version.release_date|date:"M d, Y" }}</small>
+                            </div>
+                            <a href="{% url 'projects:version_detail' project.id version.id %}" class="btn btn-sm btn-outline-primary">
+                                View
+                            </a>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted">No versions created.</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Bugs -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5><i class="fas fa-bug"></i> Recent Bugs</h5>
+                    <a href="{% url 'bugs:create_bug' %}?project={{ project.id }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Report Bug
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if bugs %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Title</th>
+                                        <th>Status</th>
+                                        <th>Priority</th>
+                                        <th>Assigned To</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for bug in bugs|slice:":10" %}
+                                        <tr>
+                                            <td>{{ bug.id }}</td>
+                                            <td><a href="{% url 'bugs:bug_detail' bug.id %}">{{ bug.title }}</a></td>
+                                            <td>
+                                                <span class="badge bg-{{ bug.status|slugify }}">
+                                                    {{ bug.get_status_display }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-{{ bug.priority|slugify }}">
+                                                    {{ bug.get_priority_display }}
+                                                </span>
+                                            </td>
+                                            <td>{% if bug.assigned_to %}{{ bug.assigned_to.username }}{% else %}Unassigned{% endif %}</td>
+                                            <td>{{ bug.created_at|date:"M d, Y" }}</td>
+                                            <td>
+                                                <a href="{% url 'bugs:bug_detail' bug.id %}" class="btn btn-sm btn-info">View</a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% if bugs.count > 10 %}
+                            <div class="text-center">
+                                <a href="{% url 'bugs:bug_list' %}?project={{ project.id }}" class="btn btn-outline-primary">
+                                    View All {{ bugs.count }} Bugs
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <p class="text-muted">No bugs reported for this project yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

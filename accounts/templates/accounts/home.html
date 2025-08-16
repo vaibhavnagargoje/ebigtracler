@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome | Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto text-center">
+            <div class="jumbotron bg-primary text-white p-5 rounded">
+                <h1 class="display-4">
+                    <i class="fas fa-bug"></i> Welcome to Bug Tracker
+                </h1>
+                <p class="lead">
+                    A comprehensive bug tracking and project management system 
+                    with AI-powered code analysis capabilities.
+                </p>
+                <hr class="my-4 bg-white">
+                <p>
+                    Track bugs, manage projects, and improve your code quality 
+                    with our intelligent analysis tools.
+                </p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                    <a href="{% url 'accounts:login' %}" class="btn btn-light btn-lg me-md-2">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    <a href="{% url 'accounts:register' %}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-user-plus"></i> Register
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-5">
+        <div class="col-md-4 text-center">
+            <div class="card h-100">
+                <div class="card-body">
+                    <i class="fas fa-project-diagram fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">Project Management</h5>
+                    <p class="card-text">
+                        Organize your projects, manage team members, and track versions 
+                        with our comprehensive project management tools.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 text-center">
+            <div class="card h-100">
+                <div class="card-body">
+                    <i class="fas fa-bug fa-3x text-danger mb-3"></i>
+                    <h5 class="card-title">Bug Tracking</h5>
+                    <p class="card-text">
+                        Report, assign, and track bugs with detailed information, 
+                        attachments, comments, and comprehensive history tracking.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4 text-center">
+            <div class="card h-100">
+                <div class="card-body">
+                    <i class="fas fa-robot fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">AI Code Analysis</h5>
+                    <p class="card-text">
+                        Leverage AI-powered code analysis to identify bugs, 
+                        performance issues, and improvement suggestions automatically.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}Statistics | Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-chart-bar"></i> System Statistics</h2>
+                                <a href="{% url 'dashboard:dashboard' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card bg-primary text-white">
+                <div class="card-body text-center">
+                    <h1 class="display-4">{{ total_projects }}</h1>
+                    <h5><i class="fas fa-project-diagram"></i> Total Projects</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-warning text-white">
+                <div class="card-body text-center">
+                    <h1 class="display-4">{{ total_bugs }}</h1>
+                    <h5><i class="fas fa-bug"></i> Total Bugs</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Bug Status Distribution -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-tasks"></i> Bug Status Distribution</h5>
+                </div>
+                <div class="card-body">
+                    {% if bug_status_counts %}
+                        {% for status in bug_status_counts %}
+                            <div class="row mb-2">
+                                <div class="col-6">{{ status.status|title }}</div>
+                                <div class="col-6">
+                                    <div class="progress">
+                                        <div class="progress-bar" role="progressbar" 
+                                             style="width: {{ status.count|floatformat:0 }}%"
+                                             aria-valuenow="{{ status.count }}" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="{{ total_bugs }}">
+                                            {{ status.count }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No bug status data available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Bug Priority Distribution -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Bug Priority Distribution</h5>
+                </div>
+                <div class="card-body">
+                    {% if bug_priority_counts %}
+                        {% for priority in bug_priority_counts %}
+                            <div class="row mb-2">
+                                <div class="col-6">{{ priority.priority|title }}</div>
+                                <div class="col-6">
+                                    <div class="progress">
+                                        <div class="progress-bar 
+                                                    {% if priority.priority == 'critical' %}bg-danger
+                                                    {% elif priority.priority == 'high' %}bg-warning
+                                                    {% elif priority.priority == 'medium' %}bg-info
+                                                    {% else %}bg-success{% endif %}" 
+                                             role="progressbar" 
+                                             style="width: {{ priority.count|floatformat:0 }}%"
+                                             aria-valuenow="{{ priority.count }}" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="{{ total_bugs }}">
+                                            {{ priority.count }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No bug priority data available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Bug Severity Distribution -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-thermometer-half"></i> Bug Severity Distribution</h5>
+                </div>
+                <div class="card-body">
+                    {% if bug_severity_counts %}
+                        {% for severity in bug_severity_counts %}
+                            <div class="row mb-2">
+                                <div class="col-6">{{ severity.severity|title }}</div>
+                                <div class="col-6">
+                                    <div class="progress">
+                                        <div class="progress-bar 
+                                                    {% if severity.severity == 'critical' %}bg-danger
+                                                    {% elif severity.severity == 'major' %}bg-warning
+                                                    {% elif severity.severity == 'minor' %}bg-info
+                                                    {% else %}bg-success{% endif %}" 
+                                             role="progressbar" 
+                                             style="width: {{ severity.count|floatformat:0 }}%"
+                                             aria-valuenow="{{ severity.count }}" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="{{ total_bugs }}">
+                                            {{ severity.count }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No bug severity data available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Projects by Bug Count -->
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-trophy"></i> Projects by Bug Count</h5>
+                </div>
+                <div class="card-body">
+                    {% if project_bug_counts %}
+                        <div class="list-group list-group-flush">
+                            {% for project in project_bug_counts %}
+                                <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                    <span>
+                                        <a href="{% url 'projects:project_detail' project.id %}" class="text-decoration-none">
+                                            {{ project.name }}
+                                        </a>
+                                    </span>
+                                    <span class="badge bg-primary rounded-pill">{{ project.bug_count }}</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No project data available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bug Creation Timeline -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-chart-line"></i> Bug Creation by Month</h5>
+                </div>
+                <div class="card-body">
+                    {% if bug_by_month %}
+                        <div class="row">
+                            {% for month_data in bug_by_month %}
+                                <div class="col-md-2 mb-3 text-center">
+                                    <h4 class="text-primary">{{ month_data.count }}</h4>
+                                    <small class="text-muted">Month {{ month_data.month }}</small>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No bug timeline data available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

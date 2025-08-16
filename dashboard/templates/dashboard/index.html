@@ -1,0 +1,176 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Navigation</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'dashboard:dashboard' %}" class="list-group-item list-group-item-action active">Dashboard</a>
+                    <a href="{% url 'dashboard:my_bugs' %}" class="list-group-item list-group-item-action">My Bugs</a>
+                    <a href="{% url 'dashboard:my_projects' %}" class="list-group-item list-group-item-action">My Projects</a>
+                    <a href="{% url 'dashboard:recent_activity' %}" class="list-group-item list-group-item-action">Recent Activity</a>
+                    <a href="{% url 'dashboard:statistics' %}" class="list-group-item list-group-item-action">Statistics</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-12 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>My Assigned Bugs</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if assigned_bugs %}
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Title</th>
+                                                <th>Project</th>
+                                                <th>Status</th>
+                                                <th>Priority</th>
+                                                <th>Last Updated</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for bug in assigned_bugs %}
+                                                <tr>
+                                                    <td>{{ bug.id }}</td>
+                                                    <td><a href="{% url 'bugs:bug_detail' bug.id %}">{{ bug.title }}</a></td>
+                                                    <td>{{ bug.project.name }}</td>
+                                                    <td><span class="badge bg-{{ bug.status|slugify }}">{{ bug.get_status_display }}</span></td>
+                                                    <td><span class="badge bg-{{ bug.priority|slugify }}">{{ bug.get_priority_display }}</span></td>
+                                                    <td>{{ bug.updated_at|date:"M d, Y" }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="text-end">
+                                    <a href="{% url 'dashboard:my_bugs' %}" class="btn btn-sm btn-primary">View All</a>
+                                </div>
+                            {% else %}
+                                <p>No bugs are currently assigned to you.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>My Projects</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if user_projects %}
+                                <div class="list-group">
+                                    {% for project in user_projects|slice:":5" %}
+                                        <a href="{% url 'projects:project_detail' project.id %}" class="list-group-item list-group-item-action">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h6 class="mb-1">{{ project.name }}</h6>
+                                                <small>{{ project.bugs.count }} bugs</small>
+                                            </div>
+                                            <p class="mb-1 text-truncate">{{ project.description }}</p>
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                                <div class="text-end mt-3">
+                                    <a href="{% url 'dashboard:my_projects' %}" class="btn btn-sm btn-primary">View All</a>
+                                </div>
+                            {% else %}
+                                <p>You're not assigned to any projects.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Recent Activity</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if recent_activity %}
+                                <div class="list-group">
+                                    {% for activity in recent_activity %}
+                                        <div class="list-group-item">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h6 class="mb-1">
+                                                    <a href="{% url 'bugs:bug_detail' activity.bug.id %}">Bug #{{ activity.bug.id }}</a>
+                                                </h6>
+                                                <small>{{ activity.timestamp|date:"M d, H:i" }}</small>
+                                            </div>
+                                            <p class="mb-1">{{ activity.user.username }}: {{ activity.action }}</p>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="text-end mt-3">
+                                    <a href="{% url 'dashboard:recent_activity' %}" class="btn btn-sm btn-primary">View All</a>
+                                </div>
+                            {% else %}
+                                <p>No recent activity.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Project Statistics</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if project_stats %}
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Project</th>
+                                                <th>Total Bugs</th>
+                                                <th>Open</th>
+                                                <th>In Progress</th>
+                                                <th>Resolved</th>
+                                                <th>Closed</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for stat in project_stats %}
+                                                <tr>
+                                                    <td>{{ stat.project.name }}</td>
+                                                    <td>{{ stat.total_bugs }}</td>
+                                                    <td>{{ stat.open_bugs }}</td>
+                                                    <td>{{ stat.in_progress_bugs }}</td>
+                                                    <td>{{ stat.resolved_bugs }}</td>
+                                                    <td>{{ stat.closed_bugs }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="text-end">
+                                    <a href="{% url 'dashboard:statistics' %}" class="btn btn-sm btn-primary">View All Statistics</a>
+                                </div>
+                            {% else %}
+                                <p>No project statistics available.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+
+{% block title %}Analysis Results | Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4><i class="fas fa-chart-line"></i> Analysis Results #{{ analysis.id }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="analysis-meta">
+                        <div class="analysis-meta-item">
+                            <span class="analysis-meta-label">Language:</span>
+                            <span class="badge bg-info">{{ analysis.language|title }}</span>
+                        </div>
+                        <div class="analysis-meta-item">
+                            <span class="analysis-meta-label">Status:</span>
+                            <span class="badge bg-{{ analysis.status|slugify }}">{{ analysis.get_status_display }}</span>
+                        </div>
+                        <div class="analysis-meta-item">
+                            <span class="analysis-meta-label">Submitted:</span>
+                            <span>{{ analysis.submitted_at|date:"M d, Y H:i" }}</span>
+                        </div>
+                        <div class="analysis-meta-item">
+                            <span class="analysis-meta-label">Submitted by:</span>
+                            <span>{{ analysis.submitted_by.username }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% if results %}
+                <!-- Quality Score -->
+                {% if results.quality_score %}
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <div class="quality-score">
+                                <h5>Code Quality Score</h5>
+                                <div class="score-circle {% if results.quality_score >= 80 %}high{% elif results.quality_score >= 60 %}medium{% else %}low{% endif %}">
+                                    {{ results.quality_score }}%
+                                </div>
+                                <p class="mt-3">{{ results.summary }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <!-- Issues Found -->
+                {% if results.issues %}
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5><i class="fas fa-exclamation-triangle"></i> Issues Found ({{ results.issues|length }})</h5>
+                        </div>
+                        <div class="card-body">
+                            {% for issue in results.issues %}
+                                <div class="issue-card {{ issue.type }}">
+                                    <div class="issue-header">
+                                        <h6 class="issue-title">
+                                            {% if issue.type == 'bug' %}
+                                                <i class="fas fa-bug"></i>
+                                            {% elif issue.type == 'warning' %}
+                                                <i class="fas fa-exclamation-triangle"></i>
+                                            {% else %}
+                                                <i class="fas fa-lightbulb"></i>
+                                            {% endif %}
+                                            {{ issue.description }}
+                                        </h6>
+                                        <span class="issue-severity {{ issue.severity }}">{{ issue.severity|title }}</span>
+                                    </div>
+                                    <div class="issue-content">
+                                        {% if issue.line %}
+                                            <div class="issue-line">
+                                                <strong>Line {{ issue.line }}:</strong> Issue detected
+                                            </div>
+                                        {% endif %}
+                                        {% if issue.suggestion %}
+                                            <div class="issue-suggestion">
+                                                <strong>Suggestion:</strong> {{ issue.suggestion }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+                
+                <!-- Original Code -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-code"></i> Analyzed Code</h5>
+                    </div>
+                    <div class="card-body">
+                        <pre class="code-display"><code>{{ analysis.code }}</code></pre>
+                    </div>
+                </div>
+            {% else %}
+                <div class="card">
+                    <div class="card-body text-center">
+                        {% if analysis.status == 'pending' %}
+                            <i class="fas fa-clock fa-3x text-warning mb-3"></i>
+                            <h5>Analysis Pending</h5>
+                            <p>Your code analysis is queued and will be processed shortly.</p>
+                        {% elif analysis.status == 'processing' %}
+                            <i class="fas fa-spinner fa-spin fa-3x text-info mb-3"></i>
+                            <h5>Analysis in Progress</h5>
+                            <p>Our AI is currently analyzing your code. This may take a few moments.</p>
+                        {% elif analysis.status == 'failed' %}
+                            <i class="fas fa-exclamation-circle fa-3x text-danger mb-3"></i>
+                            <h5>Analysis Failed</h5>
+                            <p>Unfortunately, the analysis could not be completed. Please try again.</p>
+                        {% else %}
+                            <i class="fas fa-info-circle fa-3x text-info mb-3"></i>
+                            <h5>No Results Available</h5>
+                            <p>The analysis has completed but no results are available to display.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <div class="col-md-12 text-center">
+            <a href="{% url 'ai_debugger:analysis_home' %}" class="btn btn-secondary me-2">
+                <i class="fas fa-arrow-left"></i> Back to AI Debugger
+            </a>
+            <a href="{% url 'ai_debugger:submit_analysis' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> New Analysis
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+.code-display {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    padding: 15px;
+    font-family: 'Courier New', monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    max-height: 400px;
+    overflow-y: auto;
+}
+</style>
+{% endblock %}

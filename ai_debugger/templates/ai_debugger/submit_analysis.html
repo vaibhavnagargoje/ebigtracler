@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Submit Code Analysis | Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-10 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-code"></i> Submit Code for AI Analysis</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="language-selector">
+                            <label for="language" class="form-label">Programming Language</label>
+                            <select class="form-select" id="language" name="language" required>
+                                <option value="">Select Language</option>
+                                <option value="python">Python</option>
+                                <option value="javascript">JavaScript</option>
+                                <option value="java">Java</option>
+                                <option value="cpp">C++</option>
+                                <option value="csharp">C#</option>
+                                <option value="php">PHP</option>
+                                <option value="ruby">Ruby</option>
+                                <option value="go">Go</option>
+                                <option value="rust">Rust</option>
+                                <option value="typescript">TypeScript</option>
+                                <option value="swift">Swift</option>
+                                <option value="kotlin">Kotlin</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group mt-3">
+                            <label for="code" class="form-label">Code to Analyze</label>
+                            <textarea class="code-editor" id="code" name="code" required
+                                      placeholder="Paste your code here for AI analysis..."></textarea>
+                            <div class="form-text">
+                                Paste the code you want to analyze. The AI will check for bugs, 
+                                performance issues, and suggest improvements.
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{% url 'ai_debugger:analysis_home' %}" class="btn btn-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-robot"></i> Analyze Code
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-info-circle"></i> What does AI Analysis include?</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <i class="fas fa-bug fa-2x text-danger mb-2"></i>
+                                <h6>Bug Detection</h6>
+                                <p class="small">Identifies potential bugs, errors, and logical issues in your code.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <i class="fas fa-tachometer-alt fa-2x text-warning mb-2"></i>
+                                <h6>Performance Analysis</h6>
+                                <p class="small">Suggests optimizations for better performance and efficiency.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                <i class="fas fa-star fa-2x text-success mb-2"></i>
+                                <h6>Code Quality</h6>
+                                <p class="small">Provides suggestions for better code structure and maintainability.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

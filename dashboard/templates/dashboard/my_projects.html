@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}My Projects | Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2><i class="fas fa-project-diagram"></i> My Projects</h2>
+    
+    <div class="row">
+        {% if managed_projects %}
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-user-tie"></i> Projects I Manage ({{ managed_projects.count }})</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for project in managed_projects %}
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6 class="card-title">
+                                                <a href="{% url 'projects:project_detail' project.id %}">{{ project.name }}</a>
+                                            </h6>
+                                            <p class="card-text text-muted">{{ project.description|truncatechars:100 }}</p>
+                                            <div class="d-flex justify-content-between">
+                                                <small class="text-muted">{{ project.members.count }} members</small>
+                                                <small class="text-muted">{{ project.bugs.count }} bugs</small>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <a href="{% url 'projects:project_detail' project.id %}" class="btn btn-sm btn-primary">View</a>
+                                            <a href="{% url 'projects:edit_project' project.id %}" class="btn btn-sm btn-warning">Edit</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        
+        {% if member_projects %}
+            <div class="col-md-12 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-users"></i> Projects I'm a Member Of ({{ member_projects.count }})</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for project in member_projects %}
+                                <div class="col-md-4 mb-3">
+                                    <div class="card h-100">
+                                        <div class="card-body">
+                                            <h6 class="card-title">
+                                                <a href="{% url 'projects:project_detail' project.id %}">{{ project.name }}</a>
+                                            </h6>
+                                            <p class="card-text text-muted">{{ project.description|truncatechars:100 }}</p>
+                                            <div class="d-flex justify-content-between">
+                                                <small class="text-muted">Manager: {{ project.manager.username }}</small>
+                                                <small class="text-muted">{{ project.bugs.count }} bugs</small>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <a href="{% url 'projects:project_detail' project.id %}" class="btn btn-sm btn-primary">View</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        
+        {% if not managed_projects and not member_projects %}
+            <div class="col-md-12">
+                <div class="alert alert-info text-center">
+                    <i class="fas fa-info-circle fa-2x mb-3"></i>
+                    <h5>No Projects Yet</h5>
+                    <p>You're not involved in any projects yet.</p>
+                    <a href="{% url 'projects:create_project' %}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Create Your First Project
+                    </a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Version {{ version.version_number }} | Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Delete Version</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h5><i class="fas fa-warning"></i> Warning!</h5>
+                        <p>You are about to delete version <strong>{{ version.version_number }}</strong> from project <strong>{{ project.name }}</strong>.</p>
+                        <p><strong>This action cannot be undone!</strong></p>
+                        {% if version.bugs.count > 0 %}
+                            <p class="text-danger">
+                                <i class="fas fa-bug"></i> 
+                                This version has <strong>{{ version.bugs.count }} bug(s)</strong> associated with it. 
+                                These bugs will lose their version association.
+                            </p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Version Details:</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Version:</strong> {{ version.version_number }}</li>
+                            <li><strong>Release Date:</strong> {{ version.release_date|date:"F d, Y" }}</li>
+                            <li><strong>Associated Bugs:</strong> {{ version.bugs.count }}</li>
+                        </ul>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'projects:version_detail' project.id version.id %}" class="btn btn-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Yes, Delete Version
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

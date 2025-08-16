@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Project | Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-edit"></i> Edit Project</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <label for="name" class="form-label required-field">Project Name</label>
+                            <input type="text" class="form-control" id="name" name="name" value="{{ project.name }}" required>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="description" class="form-label required-field">Description</label>
+                            <textarea class="form-control" id="description" name="description" rows="4" required>{{ project.description }}</textarea>
+                        </div>
+                        
+                        <div class="form-group mb-3">
+                            <label for="end_date" class="form-label">End Date</label>
+                            <input type="date" class="form-control" id="end_date" name="end_date" 
+                                   value="{% if project.end_date %}{{ project.end_date|date:'Y-m-d' }}{% endif %}">
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'projects:project_detail' project.id %}" class="btn btn-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Update Project
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

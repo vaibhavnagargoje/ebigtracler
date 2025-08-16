@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Recent Activity | Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-clock"></i> Recent Activity</h2>
+                <a href="{% url 'dashboard:dashboard' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Recent Bug Changes -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-bug"></i> Recently Modified Bugs</h5>
+                </div>
+                <div class="card-body">
+                    {% if recent_bugs %}
+                        <div class="list-group list-group-flush">
+                            {% for bug in recent_bugs %}
+                                <div class="list-group-item px-0">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">
+                                                                <a href="{% url 'dashboard:dashboard' %}" class="btn btn-outline-primary">
+                                                    {{ bug.title }}
+                                                </a>
+                                            </h6>
+                                            <p class="mb-1 text-muted small">
+                                                <i class="fas fa-project-diagram"></i> {{ bug.project.name }}
+                                                <span class="mx-2">|</span>
+                                                <span class="badge bg-{{ bug.priority|lower }}">{{ bug.get_priority_display }}</span>
+                                                <span class="badge bg-secondary">{{ bug.get_status_display }}</span>
+                                            </p>
+                                            <small class="text-muted">
+                                                Updated {{ bug.updated_at|timesince }} ago
+                                                {% if bug.assigned_to %}
+                                                    by {{ bug.assigned_to.username }}
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No recent bug activity.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Bug History -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-history"></i> Bug History</h5>
+                </div>
+                <div class="card-body">
+                    {% if bug_history %}
+                        <div class="list-group list-group-flush">
+                            {% for history in bug_history %}
+                                <div class="list-group-item px-0">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">
+                                                <a href="{% url 'bugs:bug_detail' history.bug.id %}" class="text-decoration-none">
+                                                    {{ history.bug.title }}
+                                                </a>
+                                            </h6>
+                                            <p class="mb-1">
+                                                <strong>{{ history.field_name }}</strong> changed
+                                                {% if history.old_value %}
+                                                    from <span class="text-muted">"{{ history.old_value }}"</span>
+                                                {% endif %}
+                                                {% if history.new_value %}
+                                                    to <span class="text-success">"{{ history.new_value }}"</span>
+                                                {% endif %}
+                                            </p>
+                                            <small class="text-muted">
+                                                {{ history.timestamp|timesince }} ago
+                                                {% if history.changed_by %}
+                                                    by {{ history.changed_by.username }}
+                                                {% endif %}
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No bug history available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

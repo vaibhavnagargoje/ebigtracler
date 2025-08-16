@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Project {{ project.name }} | Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Delete Project</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <h5><i class="fas fa-warning"></i> Warning!</h5>
+                        <p>You are about to delete the project <strong>{{ project.name }}</strong>.</p>
+                        <p><strong>This action cannot be undone!</strong></p>
+                        
+                        {% if project.bugs.count > 0 %}
+                            <p class="text-danger">
+                                <i class="fas fa-bug"></i> 
+                                This project has <strong>{{ project.bugs.count }} bug(s)</strong> that will also be deleted.
+                            </p>
+                        {% endif %}
+                        
+                        {% if project.versions.count > 0 %}
+                            <p class="text-danger">
+                                <i class="fas fa-code-branch"></i> 
+                                This project has <strong>{{ project.versions.count }} version(s)</strong> that will also be deleted.
+                            </p>
+                        {% endif %}
+                        
+                        {% if project.members.count > 0 %}
+                            <p class="text-info">
+                                <i class="fas fa-users"></i> 
+                                This project has <strong>{{ project.members.count }} member(s)</strong> who will lose access.
+                            </p>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <h6>Project Details:</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>Name:</strong> {{ project.name }}</li>
+                            <li><strong>Manager:</strong> {{ project.manager.username }}</li>
+                            <li><strong>Created:</strong> {{ project.created_at|date:"F d, Y" }}</li>
+                            <li><strong>Members:</strong> {{ project.members.count }}</li>
+                            <li><strong>Bugs:</strong> {{ project.bugs.count }}</li>
+                            <li><strong>Versions:</strong> {{ project.versions.count }}</li>
+                        </ul>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'projects:project_detail' project.id %}" class="btn btn-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Yes, Delete Project
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

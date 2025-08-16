@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Code Analysis | Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>AI Debugger</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'ai_debugger:analysis_home' %}" class="list-group-item list-group-item-action active">Home</a>
+                    <a href="{% url 'ai_debugger:submit_analysis' %}" class="list-group-item list-group-item-action">Submit Code</a>
+                    <a href="{% url 'ai_debugger:analysis_history' %}" class="list-group-item list-group-item-action">History</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-header">
+                    <h4>AI Code Analysis</h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead">
+                        Welcome to the AI Code Analysis tool. This tool helps you find bugs, 
+                        improve performance, and enhance the quality of your code using advanced AI.
+                    </p>
+                    
+                    <div class="d-grid gap-2 col-md-6 mx-auto mt-4">
+                        <a href="{% url 'ai_debugger:submit_analysis' %}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-code"></i> Submit Code for Analysis
+                        </a>
+                        <a href="{% url 'ai_debugger:analysis_history' %}" class="btn btn-secondary btn-lg">
+                            <i class="fas fa-history"></i> View Analysis History
+                        </a>
+                    </div>
+                    
+                    {% if recent_analyses %}
+                        <div class="mt-5">
+                            <h5>Your Recent Analyses</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Language</th>
+                                            <th>Status</th>
+                                            <th>Submitted</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for analysis in recent_analyses %}
+                                            <tr>
+                                                <td>{{ analysis.id }}</td>
+                                                <td>{{ analysis.language }}</td>
+                                                <td>
+                                                    <span class="badge bg-{{ analysis.status|slugify }}">
+                                                        {{ analysis.get_status_display }}
+                                                    </span>
+                                                </td>
+                                                <td>{{ analysis.submitted_at|date:"M d, Y H:i" }}</td>
+                                                <td>
+                                                    <a href="{% url 'ai_debugger:analysis_results' analysis.id %}" class="btn btn-info btn-sm">
+                                                        View Results
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

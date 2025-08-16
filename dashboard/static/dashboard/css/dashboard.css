@@ -1,0 +1,102 @@
+/* Dashboard Styles */
+
+/* Dashboard cards */
+.dashboard-card {
+    transition: transform 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Status badges */
+.badge.bg-open {
+    background-color: #dc3545;
+}
+
+.badge.bg-in_progress {
+    background-color: #fd7e14;
+}
+
+.badge.bg-resolved {
+    background-color: #20c997;
+}
+
+.badge.bg-closed {
+    background-color: #6c757d;
+}
+
+.badge.bg-reopened {
+    background-color: #6610f2;
+}
+
+/* Priority badges */
+.badge.bg-low {
+    background-color: #28a745;
+}
+
+.badge.bg-medium {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge.bg-high {
+    background-color: #fd7e14;
+}
+
+.badge.bg-critical {
+    background-color: #dc3545;
+}
+
+/* Dashboard stats */
+.stats-card {
+    border-left: 4px solid #007bff;
+}
+
+.stats-card.bg-info {
+    border-left-color: #17a2b8;
+}
+
+.stats-card.bg-success {
+    border-left-color: #28a745;
+}
+
+.stats-card.bg-warning {
+    border-left-color: #ffc107;
+}
+
+.stats-card.bg-danger {
+    border-left-color: #dc3545;
+}
+
+/* Activity feed */
+.activity-item {
+    border-left: 3px solid #dee2e6;
+    padding-left: 15px;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.activity-item:before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #007bff;
+    position: absolute;
+    left: -7px;
+    top: 0;
+}
+
+.activity-time {
+    color: #6c757d;
+    font-size: 0.8rem;
+}
+
+/* Dashboard charts */
+.chart-container {
+    position: relative;
+    height: 250px;
+    margin-bottom: 20px;
+}

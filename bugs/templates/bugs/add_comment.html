@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Comment | Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-comment"></i> Add Comment to Bug #{{ bug.id }}</h4>
+                    <p class="mb-0 text-muted">{{ bug.title }}</p>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <label for="content" class="form-label required-field">Comment</label>
+                            <textarea class="form-control" id="content" name="content" rows="6" required
+                                      placeholder="Add your comment here..."></textarea>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{% url 'bugs:bug_detail' bug.id %}" class="btn btn-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Add Comment
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
